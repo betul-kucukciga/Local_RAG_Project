@@ -25,7 +25,7 @@ Vektör Arama (vector_store.py): Metin parçalarını embedding modeline iletir,
 
 Prompt & Çıkarım (prompt_templates.py & model_client.py): Bulunan bağlamı (context) şablona yerleştirip CPU üzerinde çalışan LLM'e gönderir.
 
-📁 Proje Yapısı
+## 📁 Proje Yapısı
 Aşağıda projenin dosya ve klasör hiyerarşisi yer almaktadır:
 
 ```text
@@ -53,44 +53,44 @@ LOCAL_RAG_PROJECT/
 └── .gitignore
 ```
 
-⚡ Kurulum ve Çalıştırma
-1. Sanal Ortam Oluşturma ve Bağımlılıklar
+## ⚡ Kurulum ve Çalıştırma
+## Sanal Ortam Oluşturma ve Bağımlılıklar
 Projenin kök dizininde bir terminal açın ve aşağıdaki komutları sırasıyla çalıştırın:
 
-# Sanal ortam oluşturma
+### Sanal ortam oluşturma
 python -m venv venv
 
-# Sanal ortamı aktifleştirme (Windows)
+### Sanal ortamı aktifleştirme (Windows)
 venv\Scripts\activate
 
-# Sanal ortamı aktifleştirme (Linux / macOS)
+### Sanal ortamı aktifleştirme (Linux / macOS)
 source venv/bin/activate
 
-# Bağımlılıkları yükleme
+### Bağımlılıkları yükleme
 pip install -r requirements.txt
 
-2. Modelleri İndirme
+## Modelleri İndirme
 Yerel model kataloğundan gerekli LLM ve Embedding modellerini indirin:
 
 python src/download_model.py
 
-3. Çıkarım Testi (CPU)
+## Çıkarım Testi (CPU)
 Modelin RAM'e sorunsuz yüklendiğini ve CPU üzerinde çalıştığını doğrulamak için:
 
 python test_inference.py
 
-4. Uygulamayı Çalıştırma
+## Uygulamayı Çalıştırma
 Tüm RAG boru hattını terminal üzerinden başlatmak veya Streamlit arayüzünü açmak için:
 
-# Terminal boru hattını çalıştırmak için
+### Terminal boru hattını çalıştırmak için
 python main.py
 
-# Streamlit arayüzünü açmak için
+### Streamlit arayüzünü açmak için
 streamlit run app.py
 
-⚙️ Öne Çıkan Özellikler
-🔒 Çevrimdışı ve Güvenli: Verileriniz dışarıya aktarılmaz, tüm işlemler bilgisayarınızda gerçekleşir.
+## ⚙️ Öne Çıkan Özellikler
+# Çevrimdışı ve Güvenli: Verileriniz dışarıya aktarılmaz, tüm işlemler bilgisayarınızda gerçekleşir.
 
-💻 CPU Optimizasyonu: Grafik kartı (GPU) bağımlılığı olmadan, RAM ve CPU çekirdekleri üzerinde stabil çalışacak şekilde tasarlanmıştır.
+# CPU Optimizasyonu: Grafik kartı (GPU) bağımlılığı olmadan, RAM ve CPU çekirdekleri üzerinde stabil çalışacak şekilde tasarlanmıştır.
 
-🚀 Hafif Vektör Arama: Ekstra ağır vektör veritabanları (Chroma, Milvus vb.) yerine SQLite ve NumPy C-API gücü kullanılır.
+# Hafif Vektör Arama: Ekstra ağır vektör veritabanları (Chroma, Milvus vb.) yerine SQLite ve NumPy C-API gücü kullanılır.
