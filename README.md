@@ -89,8 +89,11 @@ python main.py
 streamlit run app.py
 
 ## ⚙️ Öne Çıkan Özellikler
-# Çevrimdışı ve Güvenli: Verileriniz dışarıya aktarılmaz, tüm işlemler bilgisayarınızda gerçekleşir.
+### Çevrimdışı ve Güvenli: 
+Verileriniz dışarıya aktarılmaz, tüm işlemler bilgisayarınızda gerçekleşir.
 
-# CPU Optimizasyonu: Grafik kartı (GPU) bağımlılığı olmadan, RAM ve CPU çekirdekleri üzerinde stabil çalışacak şekilde tasarlanmıştır.
+### CPU Optimizasyonu: 
+Grafik kartı (GPU) bağımlılığı olmadan, RAM ve CPU çekirdekleri üzerinde stabil çalışacak şekilde tasarlanmıştır.
 
-# Hafif Vektör Arama: Ekstra ağır vektör veritabanları (Chroma, Milvus vb.) yerine SQLite ve NumPy C-API gücü kullanılır.
+### Hafif Vektör Arama: 
+Ekstra ağır vektör veritabanları (Chroma, Milvus vb.) yerine SQLite ve NumPy C-API gücü kullanılır.
