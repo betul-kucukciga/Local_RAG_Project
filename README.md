@@ -28,6 +28,7 @@ Prompt & Çıkarım (prompt_templates.py & model_client.py): Bulunan bağlamı (
 📁 Proje Yapısı
 Aşağıda projenin dosya ve klasör hiyerarşisi yer almaktadır:
 
+```text
 LOCAL_RAG_PROJECT/
 │
 ├── config/
@@ -50,7 +51,7 @@ LOCAL_RAG_PROJECT/
 ├── test_inference.py         # CPU çıkarım ve donanım test betiği
 ├── requirements.txt          # Proje bağımlılıkları
 └── .gitignore
-
+```
 
 ⚡ Kurulum ve Çalıştırma
 1. Sanal Ortam Oluşturma ve Bağımlılıklar
