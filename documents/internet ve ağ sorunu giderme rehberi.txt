@@ -1,0 +1,145 @@
+================================================================================
+          MASAUSTU ISLETIM SISTEMLERI ICIN AG VE ETHERNET SORUN GIDERME
+================================================================================
+
+--------------------------------------------------------------------------------
+1. WINDOWS ISLETIM SISTEMI AG SORUN GIDERME
+--------------------------------------------------------------------------------
+
+Windows üzerinde ağ sorunları genellikle bozulmuş DNS önbellekleri, kilitlenmiş
+Socket kataloğu (Winsock) veya hatalı IP yapılandırmalarından kaynaklanır.
+
+[ Terminal (Komut İstemi / CMD) Yönetici Olarak Nasıl Açılır? ]
+Sistem düzeyindeki ağ protokollerini sıfırlamak için komut satırının yüksek 
+ayrıcalıklarla (Run as administrator) çalıştırılması gerekir.
+
+1. Windows + S kısayolu ile arama çubuğunu açın.
+2. "cmd" yazıp çıkan Komut İstemi uygulamasına sağ tıklayarak "Yönetici olarak çalıştır" seçeneğini seçin.
+3. UAC (Kullanıcı Hesabı Denetimi) uyarısını "Evet" diyerek onaylayın.
+
+[ Ağ ve Protokol Sıfırlama Komut Dizisi ]
+Aşağıdaki komutları sırasıyla girip her birinden sonra Enter tuşuna basın:
+
+ipconfig /flushdns
+ipconfig /release
+ipconfig /renew
+netsh winsock reset
+netsh int ip reset
+
+Komut Açıklamaları:
+* ipconfig /flushdns (DNS Önbelleğini Temizleme): İşletim sisteminin local DNS 
+  resolver önbelleğinde tuttuğu alan adı-IP eşleşmelerini siler.
+* ipconfig /release (IP Bırakma): Ağ kartının mevcut DHCP sunucusundan aldığı 
+  IP adresini bıraktığını bildiren bir DHCPRELEASE paketi gönderir.
+* ipconfig /renew (IP Yenileme): Ağ kartı üzerinden DHCP sunucusuna yayın yaparak 
+  yeniden IP adresi, Subnet Mask ve Default Gateway talep eder.
+* netsh winsock reset (Winsock Sıfırlama): Windows'un ağ uygulamaları ile TCP/IP 
+  yığını arasındaki iletişimini sağlayan Winsock kataloğunu varsayılana döndürür.
+* netsh int ip reset (TCP/IP Yığınını Yeniden Kurma): TCP/IP protokol 
+  yapılandırmasını sıfırlar ve protokol yığınını yeniden yazar.
+
+ONEMLI NOT: Komutlar bittiğinde socket işlemlerinin ve protokol yığınının 
+tamamen temizlenmesi için bilgisayarınızı mutlaka yeniden başlatın.
+
+[ Arayüz ve Sürücü (NIC) Yönetimi ]
+* Bağdaştırıcıyı Yeniden Başlatma: Windows + R tuşlarına basıp "ncpa.cpl" yazarak 
+  Ağ Bağlantıları menüsüne gidin. Kullanılan Ethernet/Wi-Fi bağdaştırıcısına sağ 
+  tıklayıp Devre Dışı Bırak deyin. 10 saniye sonra tekrar sağ tıklayıp Etkinleştir yapın.
+* Sürücüyü Donanımsal Sıfırlama: Başlat'a sağ tıklayıp Aygıt Yöneticisi'ni açın. 
+  Ağ Bağdaştırıcıları altındaki kartınıza sağ tıklayıp "Cihazı Kaldır" deyin 
+  (Sürücü yazılımını sil seçeneğini işaretlemeyin). Sistemi yeniden başlattığınızda 
+  sürücü temiz bir şekilde tekrar yüklenecektir.
+
+
+--------------------------------------------------------------------------------
+2. macOS ISLETIM SISTEMI AG SORUN GIDERME
+--------------------------------------------------------------------------------
+
+macOS, UNIX tabanlı bir mimariye sahip olduğu için ağ yönetimi Daemon (arka plan 
+hizmetleri) ve systemconfiguration katmanı üzerinden yürütülür.
+
+[ Terminal Üzerinden mDNSResponder ve Ağ Sıfırlama ]
+Arama çubuğuna (Cmd + Space) "Terminal" yazarak uygulamayı açın ve şu komutları uygulayın:
+
+Adım 1: macOS DNS Önbelleğini Temizleme
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+
+Açıklama: "dscacheutil -flushcache" sistem seviyesindeki önbelleği siler. 
+"killall -HUP mDNSResponder" komutu ise DNS daemon'ına bir HUP sinyali 
+göndererek konfigürasyonunu yeniden yüklemesini sağlar.
+
+Adım 2: DHCP Kira Süresini (Lease) Terminalden Yenileme
+sudo ipconfig set en0 DHCP
+
+Açıklama: "en0" genellikle varsayılan Wi-Fi veya Ethernet arabirimidir. Bu komut 
+arabirime DHCP sunucusundan yeniden IP talep ettirir.
+
+[ macOS Ağ Tercihlerini (Plist Files) Manuel Sıfırlama ]
+Sistem ayarlarındaki bozulmalar için ağ yapılandırma dosyalarını sıfırlayabilirsiniz:
+
+1. Finder'ı açın ve üst menüden Git > Klasöre Git... (Cmd + Shift + G) yolunu izleyin.
+2. Açılan kutuya şu yolu yapıştırın: /Library/Preferences/SystemConfiguration/
+3. Bu klasör içindeki şu yapılandırma dosyalarını silin (yedeklerini alabilirsiniz):
+   - com.apple.preferences.plist
+   - com.apple.airport.preferences.plist
+   - NetworkInterfaces.plist
+   - preferences.plist
+4. Bilgisayarınızı yeniden başlatın. macOS açılırken bu dosyaları varsayılan değerlerle 
+   sıfırdan oluşturacaktır.
+
+
+--------------------------------------------------------------------------------
+3. LINUX ISLETIM SISTEMI AG SORUN GIDERME (Ubuntu, Debian, Fedora, Arch)
+--------------------------------------------------------------------------------
+
+Linux dağıtımlarında ağ yönetimi genellikle NetworkManager, systemd-resolved 
+veya iproute2 araç setleri ile yürütülür.
+
+[ Terminal (CLI) İle Ağ Stack'ini Yönetme ]
+
+Adım 1: DNS Önbelleğini Temizleme (systemd-resolved)
+sudo systemd-resolve --flush-caches
+
+Servis durumunu kontrol etmek için:
+sudo resolvectl status
+
+Adım 2: Ağ Arabirimini ve IP'yi Bırakıp Yeniden Alma (iproute2)
+Önce aktif ağ arabiriminizin adını öğrenin:
+ip link show
+(Örn: eth0, wlan0 veya enp3s0)
+
+Arabirimi kapatıp açarak fiziksel katmanı yenileyin:
+sudo ip link set dev enp3s0 down
+sudo ip link set dev enp3s0 up
+
+DHCP istemcisini (dhclient) tetikleyip yeni IP talep etmek için:
+sudo dhclient -r enp3s0   (Mevcut IP'yi bırakır)
+sudo dhclient enp3s0      (Yeni IP ister)
+
+Adım 3: NetworkManager Servisini Yeniden Başlatma
+Masaüstü Linux dağıtımlarının çoğunda ağı yöneten ana servisi yeniden başlatmak için:
+sudo systemctl restart NetworkManager
+
+Açıklama: Bu komut tüm ağ sürücülerini, routing tablolarını ve kablosuz bağlantı 
+daemon'larını tazeleyerek servisi sıfırdan ayağa kaldırır.
+
+
+--------------------------------------------------------------------------------
+4. BILGISAYARLAR ICIN GENEL MODEM VE YONLENDIRICI (ROUTER) IYILESTIRMELERI
+--------------------------------------------------------------------------------
+
+[ Wi-Fi Kanal ve Bant Genişliği Ayarları ]
+1. Tarayıcınızdan modem arayüz IP'sine gidin (192.168.1.1, 192.168.0.1 veya 192.168.2.1).
+2. Kullanıcı adı ve şifre ile giriş yapıp Kablosuz / WLAN ayarlarına geçin.
+3. 2.4 GHz Bandı için: Çakışmayı önlemek adına kanalı manuel olarak 1, 6 veya 11 
+   kanallarından birine sabitleyin.
+4. 5 GHz / 6 GHz Bandı için: Kanalları varsayılanda bırakabilir veya DFS içermeyen 
+   yüksek kanallara çekebilirsiniz. Bant genişliğini (Bandwidth) 80 MHz veya 160 MHz 
+   yaparak veri aktarım hızını artırabilirsiniz.
+
+[ Fiziksel Güç Sıfırlaması (Power Cycle) ]
+1. Modemin arkasındaki güç anahtarını kapatın veya adaptör kablosunu çekin.
+2. Cihazın üzerindeki kondansatörlerin boşalması ve RAM'deki geçici tabloların 
+   temizlenmesi için 30 saniye bekleyin.
+3. Kabloyu geri takıp cihazın tam olarak boot etmesini (ışıkların sabitlenmesini) bekleyin.
+================================================================================
