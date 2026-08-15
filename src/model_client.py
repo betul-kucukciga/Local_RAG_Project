@@ -19,7 +19,6 @@ class LocalModelClient:
         """
         self.model_name = model_name
 
-        # DÜZELTME: Doğrudan SDK'nın instance durumunu kontrol ediyoruz.
         if FoundryLocalManager.instance is None:
             config = Configuration(app_name="local_rag_project")
             try:
@@ -29,7 +28,6 @@ class LocalModelClient:
 
         self.manager = FoundryLocalManager.instance
         
-        # Manager'ın başarılı bir şekilde elde edildiğinden emin oluyoruz
         if self.manager is None:
             raise RuntimeError("FoundryLocalManager örneği (instance) alınamadı.")
 
